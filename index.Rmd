@@ -1,0 +1,91 @@
+---
+title: "Pós-graduação em Engenharia Civil - UFF"
+subtitle: "UFF"
+author: "prof. Steven Dutt Ross"
+output: 
+  flexdashboard::flex_dashboard:
+    theme: flatly
+---
+
+<style>
+h2 {color: #1d5d82;}
+</style>
+
+```{r setup, include=FALSE}
+# Para mudar o cabeçalho do flexdashboard existem duas formas: a primeira é utilizando o theme do bootstrap (exemplo  theme: flatly). a segunda é abrindo o HTML no notepad++ e procurar pelo codigo navbar-inverse .navbar-nav > li > a,      e fazer a edicao por exemplo navbar-inverse { background-color: #1d5d82;  border-color: #1d5d82;} .navbar-nav > li > a,
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(tibble)
+library(htmltools)
+library(DT)
+library(RcmdrMisc)
+library(magrittr)
+library(highcharter)
+library(lubridate)
+
+NOTAS <- readXL("C:/Users/Steven/Dropbox/2018/segundo semestre/Presenca.xlsx", rownames=FALSE, header=TRUE, na="", sheet="notas", stringsAsFactors=TRUE)
+NOTAS <- tbl_df(NOTAS)
+NOTAS <- NOTAS[1:10,]
+NOTAS <- NOTAS[,c(1,7:15)]
+NOTAS$Total_Facebook<-round(NOTAS$Total_Facebook,2)
+NOTAS$Caso_Jose<-round(as.numeric(NOTAS$Caso_Jose,2))
+NOTAS$Avaliacao_1<-round(NOTAS$Avaliacao_1,2)
+NOTAS$Avaliacao_2<-round(NOTAS$Avaliacao_2,2)
+NOTAS$Nota_Apresentacao<-round(NOTAS$Nota_Apresentacao,2)
+NOTAS$Media<-round(NOTAS$Media,2)
+```
+
+Gráficos
+================================================================
+
+## Box Plot das notas da Pós-graduação em Engenharia Civil - UFF
+
+```{r grafico, echo=FALSE, warning=FALSE}
+highchart() %>% 
+    hc_title(text = "Gráfico 1 - <b> Boxplot</b> Pós-graduação em Engenharia Civil - UFF/2018.2",
+           margin = 20, align = "left",
+           style = list(color = "#5388fc", useHTML = TRUE)) %>% 
+  hc_add_series_boxplot(x = NOTAS$Media, nullColor = "#C0D890", color = "#1A237E", name = "Nota") %>% 
+  hc_tooltip(crosshairs = TRUE, backgroundColor = "#FCFFC5",
+             shared = TRUE, borderWidth = 5)  %>% 
+  hc_yAxis(minorGridLineWidth = 0, gridLineWidth = 0,
+           plotBands = list(
+             list(from = 9, to = 9.6, color = "rgba(11,156,49,0.8)",
+                  label = list(text = "25% dos dados")),
+             list(from = 8.435, to = 9, color = "rgba(11,156,49,0.6)",
+                  label = list(text = "25% dos dados")),
+             list(from = 7.56, to = 8.435, color = "rgba(11,156,49,0.4)",
+                  label = list(text = "25% dos dados")),
+             list(from = 0, to = 7.56, color = "rgba(11,156,49,0.2)",
+                  label = list(text = "25% dos dados"))
+             ))
+
+
+```
+
+Row
+----------------------------------------------------------------
+
+```{r grafico2, echo=FALSE, warning=FALSE}
+highchart() %>% 
+  hc_title(text = "Gráfico 2 - <b>Diagrama de Dispersão</b> das notas das duas avaliações", style = list(color = "#5388fc", useHTML = TRUE)) %>%
+  hc_add_series_scatter(NOTAS$Avaliacao_1, NOTAS$Avaliacao_2) %>%
+  hc_add_theme(hc_theme_darkunica())
+  #hc_add_theme(hc_theme_chalk())
+
+```
+
+
+
+Notas
+=======================================================================
+
+
+-----------------------------------------------------------------------
+
+
+```{r notas, echo=FALSE}
+datatable(NOTAS)
+```
+
+
