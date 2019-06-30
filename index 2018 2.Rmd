@@ -23,17 +23,18 @@ library(magrittr)
 library(highcharter)
 library(lubridate)
 
-library(readxl)
-NOTAS <- read_excel("C:/Users/Steven/Dropbox/2019/Presenca (version 1).xlsx", sheet = "Plan2")
+NOTAS <- readXL("C:/Users/Steven/Dropbox/2018/segundo semestre/Presenca.xlsx", rownames=FALSE, header=TRUE, na="", sheet="notas", stringsAsFactors=TRUE)
 NOTAS <- tbl_df(NOTAS)
-NOTAS$Pizza<-1
-NOTAS$Boxplot<-1
-NOTAS$QualiXQuali<-1
+NOTAS <- NOTAS[1:10,]
+NOTAS <- NOTAS[,c(1,7:15)]
+NOTAS <- NOTAS[,c(1:4,7:10)]
 NOTAS$Total_Facebook<-round(NOTAS$Total_Facebook,2)
-NOTAS$Caso_Easton<-round(NOTAS$Caso_Easton,2)
+#NOTAS$Caso_Jose<-round(as.numeric(NOTAS$Caso_Jose,2))
 NOTAS$Avaliacao_1<-round(NOTAS$Avaliacao_1,2)
-NOTAS<-NOTAS[,1:12]
-
+NOTAS$Avaliacao_2<-round(NOTAS$Avaliacao_2,2)
+NOTAS$Caso_Jose<-round(NOTAS$Caso_Jose,2)
+NOTAS$Nota_Apresentacao<-round(NOTAS$Nota_Apresentacao,2)
+NOTAS$Media<-round(NOTAS$Media,2)
 ```
 
 Gráficos
@@ -42,25 +43,25 @@ Gráficos
 ## Box Plot das notas da Pós-graduação em Engenharia Civil - UFF
 
 ```{r grafico, echo=FALSE, warning=FALSE}
-
 highchart() %>% 
-  hc_title(text = "Gráfico 1 - <b> Boxplot</b> Pós-graduação em Engenharia Civil - UFF/2019.1",
+    hc_title(text = "Gráfico 1 - <b> Boxplot</b> Pós-graduação em Engenharia Civil - UFF/2018.2",
            margin = 20, align = "left",
            style = list(color = "#5388fc", useHTML = TRUE)) %>% 
-  hc_add_series_boxplot(x = NOTAS$Avaliacao_1, nullColor = "#C0D890", color = "#1A237E", name = "Nota") %>% 
+  hc_add_series_boxplot(x = NOTAS$Media, nullColor = "#C0D890", color = "#1A237E", name = "Nota") %>% 
   hc_tooltip(crosshairs = TRUE, backgroundColor = "#FCFFC5",
              shared = TRUE, borderWidth = 5)  %>% 
   hc_yAxis(minorGridLineWidth = 0, gridLineWidth = 0,
            plotBands = list(
-             list(from = 9.2, to = 9.7, color = "rgba(11,156,49,0.8)",
+             list(from = 9, to = 9.6, color = "rgba(11,156,49,0.8)",
                   label = list(text = "25% dos dados")),
-             list(from = 8, to = 9.2, color = "rgba(11,156,49,0.6)",
+             list(from = 8.435, to = 9, color = "rgba(11,156,49,0.6)",
                   label = list(text = "25% dos dados")),
-             list(from = 7.5, to = 8, color = "rgba(11,156,49,0.4)",
+             list(from = 7.56, to = 8.435, color = "rgba(11,156,49,0.4)",
                   label = list(text = "25% dos dados")),
-             list(from = 0, to = 7.5, color = "rgba(11,156,49,0.2)",
+             list(from = 0, to = 7.56, color = "rgba(11,156,49,0.2)",
                   label = list(text = "25% dos dados"))
-           ))
+             ))
+
 
 ```
 
@@ -70,7 +71,7 @@ Row
 ```{r grafico2, echo=FALSE, warning=FALSE}
 highchart() %>% 
   hc_title(text = "Gráfico 2 - <b>Diagrama de Dispersão</b> das avaliações", style = list(color = "#5388fc", useHTML = TRUE)) %>%
-  hc_add_series_scatter(NOTAS$Total, NOTAS$Caso_Easton) %>%
+  hc_add_series_scatter(NOTAS$Avaliacao_1, NOTAS$Avaliacao_2) %>%
   hc_add_theme(hc_theme_darkunica())
 
 
